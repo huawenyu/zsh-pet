@@ -132,7 +132,9 @@ petbook-insert() {
     ) || return
 
     LBUFFER+="$cmd"
+    CURSOR=${#LBUFFER}
 }
+
 
 # ---------------------------
 # fzf picker (execute directly)
@@ -152,8 +154,8 @@ petbook-run() {
 # ---------------------------
 # Keybindings (ZSH only)
 # ---------------------------
-bindkey -r '^r'
-bindkey -r '^s'
+bindkey -r '^r' 2>/dev/null
+bindkey -r '^s' 2>/dev/null
 zle -N petbook-insert
 zle -N petbook-save-current
 #zle -N petbook-run
