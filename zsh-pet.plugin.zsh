@@ -95,6 +95,30 @@ petbook-save-last() {
     echo "📌 saved: $cmd"
 }
 
+
+petbook-save-current() {
+    local cmd="$BUFFER"
+
+    [[ -z "$cmd" ]] && return
+    [[ "$cmd" == petbook-* ]] && return
+
+    # escape quotes safely for TOML
+    local escaped
+    escaped="${cmd//\"/\\\"}"
+
+    cat >> ~/.config/pet/snippet.toml <<EOF
+
+[[Snippets]]
+  Description = "cli"
+  Output = ""
+  Tag = []
+  command = "$escaped"
+EOF
+
+    zle -M "Petbook saved to '~/.config/pet/snippet.toml'."
+}
+
+
 # ---------------------------
 # fzf picker (insert into prompt)
 # ---------------------------
@@ -128,10 +152,14 @@ petbook-run() {
 # ---------------------------
 # Keybindings (ZSH only)
 # ---------------------------
+bindkey -r '^r'
+bindkey -r '^s'
 zle -N petbook-insert
+zle -N petbook-save-current
 #zle -N petbook-run
 
 bindkey '^r' petbook-insert     # Ctrl-r = insert
+bindkey '^s' petbook-save-current
 #bindkey '^g' petbook-run        # Ctrl-g = run from pet
 #bindkey '^s' petbook-save-last  # Ctrl-s = save last cmd
 
